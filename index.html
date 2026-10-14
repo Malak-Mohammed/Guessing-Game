@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Vocabulary Fun!</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for kid-friendly typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            font-family: 'Fredoka', cursive, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .silhouette {
+            filter: brightness(0) invert(0.8) drop-shadow(0 8px 12px rgba(0,0,0,0.2));
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .revealed {
+            filter: brightness(1) invert(0) drop-shadow(0 12px 20px rgba(0,0,0,0.15));
+            transform: scale(1.05);
+        }
+        .bounce-soft {
+            animation: bounceSoft 2s infinite ease-in-out;
+        }
+        @keyframes bounceSoft {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .pop-in {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col items-center justify-between p-3 select-none box-border">
+
+    <!-- Top Header / Score Bar -->
+    <header class="w-full max-w-xl bg-white/90 backdrop-blur-md rounded-2xl px-4 py-2 shadow-md flex justify-between items-center border-2 border-white shrink-0">
+        <div class="flex items-center space-x-2">
+            <span class="text-2xl">🏠</span>
+            <h1 class="text-lg md:text-xl font-bold text-indigo-600 tracking-wide">Family Quest!</h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            <div id="stars-container" class="flex space-x-1 text-xl" title="Score Stars">
+                ⭐ ⭐ ⭐
+            </div>
+            <button onclick="speakPrompt()" class="bg-amber-400 hover:bg-amber-500 text-white font-bold p-2 rounded-xl shadow-sm transition transform active:scale-95 flex items-center justify-center text-lg" title="Repeat Question">
+                🔊
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Game Arena -->
+    <main class="w-full max-w-xl flex-1 flex flex-col items-center justify-center my-1 space-y-2 overflow-hidden">
+        
+        <!-- Guide Character & Speech Bubble -->
+        <div class="flex items-center space-x-3 w-full px-2">
+            <!-- Cute Monster Guide Avatar -->
+            <div class="relative bg-pink-400 rounded-full w-14 h-14 md:w-18 md:h-18 flex items-center justify-center shadow-lg border-2 border-white bounce-soft shrink-0">
+                <span class="text-3xl md:text-4xl">👾</span>
+                <div class="absolute -bottom-1 -right-1 bg-yellow-300 text-[10px] px-1.5 py-0.5 rounded-full font-bold text-indigo-900 border border-white">Guide</div>
+            </div>
+            <!-- Speech Bubble -->
+            <div class="relative bg-white rounded-2xl p-2.5 md:p-3.5 shadow-md border-2 border-pink-200 flex-1 pop-in">
+                <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-t-transparent border-r-[12px] border-r-white border-b-[8px] border-b-transparent"></div>
+                <p id="question-text" class="text-base md:text-xl font-bold text-indigo-900 text-center">
+                    Who's this? 🤔
+                </p>
+            </div>
+        </div>
+
+        <!-- Mystery Family Member Card -->
+        <div class="relative bg-white/90 backdrop-blur-sm rounded-2xl p-3 shadow-xl border-2 border-white w-full max-w-sm flex flex-col items-center justify-center pop-in shrink-0" style="height: 155px;">
+            <div id="confetti-overlay" class="absolute inset-0 pointer-events-none flex items-center justify-center text-4xl opacity-0 transition-opacity duration-300">🎉</div>
+            <div id="image-container" class="transition-all duration-500 flex items-center justify-center">
+                <!-- Dynamically filled avatar placeholder -->
+                <div id="avatar-display" class="text-6xl md:text-7xl silhouette">👶</div>
+            </div>
+            <div id="success-banner" class="absolute bottom-2 bg-green-500 text-white font-bold px-4 py-1 rounded-full shadow-md opacity-0 transform translate-y-3 transition-all duration-300 text-sm md:text-base">
+                ✨ It's my <span id="target-name-banner">mother</span>! ✨
+            </div>
+        </div>
+
+        <!-- Multiple Choice Options Grid -->
+        <div id="options-grid" class="grid grid-cols-2 gap-2 w-full max-w-sm shrink-0">
+            <!-- Buttons generated dynamically via JS -->
+        </div>
+
+    </main>
+
+    <!-- Footer / Next Button Bar & Big Visible Credit -->
+    <footer class="w-full max-w-xl flex flex-col items-center space-y-1.5 pb-1 shrink-0">
+        <button id="next-btn" onclick="nextRound()" class="hidden bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-bold text-lg px-6 py-2 rounded-2xl shadow-lg border-2 border-white transform hover:scale-105 active:scale-95 transition flex items-center space-x-2">
+            <span>Next Round!</span>
+            <span class="text-xl">➡️</span>
+        </button>
+
+        <!-- Light Color Banner with Very Big, Noticeable Text -->
+        <div class="w-full bg-yellow-50/95 backdrop-blur-sm text-center py-2.5 px-4 rounded-2xl shadow-md border-2 border-yellow-300 transform hover:scale-[1.01] transition">
+            <span class="text-xl md:text-2xl font-black text-rose-600 tracking-wide drop-shadow-sm">🎨 Teacher Nada ✨</span>
+        </div>
+    </footer>
+
+    <!-- Notification Message Modal (Replaces alert) -->
+    <div id="message-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl border-4 border-indigo-200 pop-in">
+            <div id="modal-icon" class="text-5xl mb-2">🌟</div>
+            <h3 id="modal-title" class="text-xl font-bold text-indigo-900 mb-1">Wonderful!</h3>
+            <p id="modal-desc" class="text-gray-600 mb-4 text-base">You found all family members!</p>
+            <button onclick="closeModal()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold text-lg py-2.5 rounded-xl shadow-md transition">
+                Play Again! 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Game Logic -->
+    <script>
+        // Family Vocabulary Data Set
+        const familyData = [
+            { name: "Mother", emoji: "👩", alt: "Mom" },
+            { name: "Father", emoji: "👨", alt: "Dad" },
+            { name: "Brother", emoji: "👦", alt: "Brother" },
+            { name: "Sister", emoji: "👧", alt: "Sister" },
+            { name: "grandmother", emoji: "👵", alt: "grandma" },
+            { name: "grandfather", emoji: "👴", alt: "grandpa" }
+        ];
+
+        let currentTarget = null;
+        let score = 0;
+        let roundCount = 0;
+        const totalRoundsToWin = 5;
+        let isAnswered = false;
+        let availableCharacters = [];
+
+        // Web Audio API Sound Synthesizer
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'success') {
+                // Happy chime chord progression
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now); // A4
+                osc.frequency.setValueAtTime(554.37, now + 0.1); // C#5
+                osc.frequency.setValueAtTime(659.25, now + 0.2); // E5
+                osc.frequency.setValueAtTime(880, now + 0.3); // A5
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            } else if (type === 'error') {
+                // Gentle bonk
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(120, now + 0.2);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } else if (type === 'click') {
+                // Short pop
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            }
+        }
+
+        // Text-to-Speech Synthesis Helper with callback on end
+        function speakText(text, onEndCallback = null) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop prior utterance
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.78; // Slower pace
+                utterance.pitch = 1.28; // Higher pitched, more excited expression
+                
+                if (onEndCallback) {
+                    utterance.onend = onEndCallback;
+                    utterance.onerror = onEndCallback; // Fallback if speech errors out
+                }
+                
+                window.speechSynthesis.speak(utterance);
+            } else {
+                if (onEndCallback) onEndCallback();
+            }
+        }
+
+        function speakPrompt() {
+            speakText("Who's this?");
+        }
+
+        function initGame() {
+            score = 0;
+            roundCount = 0;
+            resetAvailableCharacters();
+            updateStarsDisplay();
+            nextRound();
+        }
+
+        function resetAvailableCharacters() {
+            // Clone and shuffle family data pool
+            availableCharacters = [...familyData].sort(() => Math.random() - 0.5);
+        }
+
+        function nextRound() {
+            isAnswered = false;
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('success-banner').classList.remove('opacity-100', 'translate-y-0');
+            document.getElementById('success-banner').classList.add('opacity-0', 'translate-y-3');
+            
+            const avatarDisplay = document.getElementById('avatar-display');
+            avatarDisplay.classList.remove('revealed');
+            avatarDisplay.classList.add('silhouette');
+
+            // Pick next unique character from the pool, refill if exhausted
+            if (availableCharacters.length === 0) {
+                resetAvailableCharacters();
+            }
+            currentTarget = availableCharacters.pop();
+            avatarDisplay.innerText = currentTarget.emoji;
+
+            // Generate 4 options including correct one
+            let options = [currentTarget.name];
+            while (options.length < 4) {
+                let randomMember = familyData[Math.floor(Math.random() * familyData.length)].name;
+                if (!options.includes(randomMember)) {
+                    options.push(randomMember);
+                }
+            }
+            // Shuffle options
+            options.sort(() => Math.random() - 0.5);
+
+            // Render buttons
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-sm md:text-base py-2.5 px-3 rounded-xl shadow-sm border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center space-x-2";
+                btn.innerText = opt;
+                btn.onclick = () => handleChoice(opt, btn);
+                grid.appendChild(btn);
+            });
+
+            speakPrompt();
+        }
+
+        function handleChoice(selectedName, btnElement) {
+            if (isAnswered) return;
+
+            if (selectedName === currentTarget.name) {
+                // Correct Answer!
+                isAnswered = true;
+                playSound('success');
+                score++;
+                roundCount++;
+
+                // Reveal silhouette
+                const avatarDisplay = document.getElementById('avatar-display');
+                avatarDisplay.classList.remove('silhouette');
+                avatarDisplay.classList.add('revealed');
+
+                // Show success banner
+                document.getElementById('target-name-banner').innerText = currentTarget.name.toLowerCase();
+                const banner = document.getElementById('success-banner');
+                banner.classList.remove('opacity-0', 'translate-y-3');
+                banner.classList.add('opacity-100', 'translate-y-0');
+
+                updateStarsDisplay();
+
+                // Check win condition vs normal round progression
+                if (roundCount >= totalRoundsToWin) {
+                    // Speak sentence reward and wait for speech to finish before win modal
+                    speakText(`It's my ${currentTarget.name.toLowerCase()}! Amazing job! You completed the family quest!`, () => {
+                        showWinModal();
+                    });
+                } else {
+                    // Speak sentence reward normally
+                    speakText(`It's my ${currentTarget.name.toLowerCase()}!`);
+                    setTimeout(() => {
+                        document.getElementById('next-btn').classList.remove('hidden');
+                    }, 500);
+                }
+
+                // Highlight correct button
+                btnElement.className = "bg-green-500 text-white font-bold text-sm md:text-base py-2.5 px-3 rounded-xl shadow-md border-2 border-white transition transform scale-105 flex items-center justify-center space-x-2";
+
+            } else {
+                // Incorrect Answer
+                playSound('error');
+                speakText("Try again!");
+                btnElement.className = "bg-red-100 text-red-500 font-bold text-sm md:text-base py-2.5 px-3 rounded-xl shadow-sm border-2 border-red-200 transition transform shake flex items-center justify-center";
+                setTimeout(() => {
+                    btnElement.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-sm md:text-base py-2.5 px-3 rounded-xl shadow-sm border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center space-x-2";
+                }, 400);
+            }
+        }
+
+        function updateStarsDisplay() {
+            let starsStr = '';
+            for (let i = 0; i < totalRoundsToWin; i++) {
+                if (i < score) {
+                    starsStr += '⭐ ';
+                } else {
+                    starsStr += '⚪ ';
+                }
+            }
+            document.getElementById('stars-container').innerText = starsStr.trim();
+        }
+
+        function showWinModal() {
+            playSound('success');
+            document.getElementById('modal-title').innerText = "Awesome Job! 🎉";
+            document.getElementById('modal-desc').innerText = `You earned ${score} stars practicing your family words!`;
+            document.getElementById('message-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('message-modal').classList.add('hidden');
+            initGame();
+        }
+
+        // Start game on load
+        window.onload = () => {
+            initGame();
+        };
+    </script>
+</body>
+</html>
