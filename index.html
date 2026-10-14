@@ -12,9 +12,9 @@
         html, body {
             font-family: 'Fredoka', cursive, sans-serif;
             background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            overflow: hidden;
+            overflow-x: hidden;
         }
         .silhouette {
             filter: brightness(0) invert(0.8) drop-shadow(0 8px 12px rgba(0,0,0,0.2));
@@ -40,72 +40,72 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col items-center justify-between p-3 select-none box-border">
+<body class="min-h-screen w-screen flex flex-col items-center justify-between p-2 md:p-4 select-none box-border">
 
     <!-- Top Header / Score Bar -->
     <header class="w-full max-w-xl bg-white/90 backdrop-blur-md rounded-2xl px-4 py-2 shadow-md flex justify-between items-center border-2 border-white shrink-0">
         <div class="flex items-center space-x-2">
             <span class="text-2xl">🏠</span>
-            <h1 class="text-lg md:text-xl font-bold text-indigo-600 tracking-wide">Family Quest!</h1>
+            <h1 class="text-base md:text-xl font-bold text-indigo-600 tracking-wide">Family Quest!</h1>
         </div>
         <div class="flex items-center space-x-3">
-            <div id="stars-container" class="flex space-x-1 text-xl" title="Score Stars">
+            <div id="stars-container" class="flex space-x-1 text-lg md:text-xl" title="Score Stars">
                 ⭐ ⭐ ⭐
             </div>
-            <button onclick="speakPrompt()" class="bg-amber-400 hover:bg-amber-500 text-white font-bold p-2 rounded-xl shadow-sm transition transform active:scale-95 flex items-center justify-center text-lg" title="Repeat Question">
+            <button onclick="speakPrompt()" class="bg-amber-400 hover:bg-amber-500 text-white font-bold p-1.5 md:p-2 rounded-xl shadow-sm transition transform active:scale-95 flex items-center justify-center text-base md:text-lg" title="Repeat Question">
                 🔊
             </button>
         </div>
     </header>
 
     <!-- Main Game Arena -->
-    <main class="w-full max-w-xl flex-1 flex flex-col items-center justify-center my-1 space-y-2 overflow-hidden">
+    <main class="w-full max-w-xl flex-1 flex flex-col items-center justify-center my-2 space-y-2 md:space-y-3">
         
         <!-- Guide Character & Speech Bubble -->
-        <div class="flex items-center space-x-3 w-full px-2">
+        <div class="flex items-center space-x-2 md:space-x-3 w-full px-2">
             <!-- Cute Monster Guide Avatar -->
-            <div class="relative bg-pink-400 rounded-full w-14 h-14 md:w-18 md:h-18 flex items-center justify-center shadow-lg border-2 border-white bounce-soft shrink-0">
-                <span class="text-3xl md:text-4xl">👾</span>
-                <div class="absolute -bottom-1 -right-1 bg-yellow-300 text-[10px] px-1.5 py-0.5 rounded-full font-bold text-indigo-900 border border-white">Guide</div>
+            <div class="relative bg-pink-400 rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-2 border-white bounce-soft shrink-0">
+                <span class="text-2xl md:text-3xl">👾</span>
+                <div class="absolute -bottom-1 -right-1 bg-yellow-300 text-[9px] px-1.5 py-0.2 rounded-full font-bold text-indigo-900 border border-white">Guide</div>
             </div>
             <!-- Speech Bubble -->
-            <div class="relative bg-white rounded-2xl p-2.5 md:p-3.5 shadow-md border-2 border-pink-200 flex-1 pop-in">
+            <div class="relative bg-white rounded-2xl p-2 md:p-3 shadow-md border-2 border-pink-200 flex-1 pop-in">
                 <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-t-transparent border-r-[12px] border-r-white border-b-[8px] border-b-transparent"></div>
-                <p id="question-text" class="text-base md:text-xl font-bold text-indigo-900 text-center">
+                <p id="question-text" class="text-sm md:text-xl font-bold text-indigo-900 text-center">
                     Who's this? 🤔
                 </p>
             </div>
         </div>
 
         <!-- Mystery Family Member Card -->
-        <div class="relative bg-white/90 backdrop-blur-sm rounded-2xl p-3 shadow-xl border-2 border-white w-full max-w-sm flex flex-col items-center justify-center pop-in shrink-0" style="height: 155px;">
+        <div class="relative bg-white/90 backdrop-blur-sm rounded-2xl p-2 md:p-3 shadow-xl border-2 border-white w-full max-w-xs md:max-w-sm flex flex-col items-center justify-center pop-in shrink-0 h-[120px] md:h-[155px]">
             <div id="confetti-overlay" class="absolute inset-0 pointer-events-none flex items-center justify-center text-4xl opacity-0 transition-opacity duration-300">🎉</div>
             <div id="image-container" class="transition-all duration-500 flex items-center justify-center">
                 <!-- Dynamically filled avatar placeholder -->
-                <div id="avatar-display" class="text-6xl md:text-7xl silhouette">👶</div>
+                <div id="avatar-display" class="text-5xl md:text-7xl silhouette">👶</div>
             </div>
-            <div id="success-banner" class="absolute bottom-2 bg-green-500 text-white font-bold px-4 py-1 rounded-full shadow-md opacity-0 transform translate-y-3 transition-all duration-300 text-sm md:text-base">
+            <div id="success-banner" class="absolute bottom-1.5 bg-green-500 text-white font-bold px-3 py-0.5 rounded-full shadow-md opacity-0 transform translate-y-3 transition-all duration-300 text-xs md:text-sm">
                 ✨ It's my <span id="target-name-banner">mother</span>! ✨
             </div>
         </div>
 
         <!-- Multiple Choice Options Grid -->
-        <div id="options-grid" class="grid grid-cols-2 gap-2 w-full max-w-sm shrink-0">
+        <div id="options-grid" class="grid grid-cols-2 gap-2 w-full max-w-xs md:max-w-sm shrink-0">
             <!-- Buttons generated dynamically via JS -->
         </div>
 
     </main>
 
     <!-- Footer / Next Button Bar & Big Visible Credit -->
-    <footer class="w-full max-w-xl flex flex-col items-center space-y-1.5 pb-1 shrink-0">
-        <button id="next-btn" onclick="nextRound()" class="hidden bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-bold text-lg px-6 py-2 rounded-2xl shadow-lg border-2 border-white transform hover:scale-105 active:scale-95 transition flex items-center space-x-2">
+    <footer class="w-full max-w-xl flex flex-col items-center space-y-1.5 pb-2 shrink-0">
+        <button id="next-btn" onclick="nextRound()" class="hidden bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-bold text-base md:text-lg px-6 py-2 rounded-2xl shadow-lg border-2 border-white transform hover:scale-105 active:scale-95 transition flex items-center space-x-2">
             <span>Next Round!</span>
             <span class="text-xl">➡️</span>
         </button>
 
         <!-- Light Color Banner with Very Big, Noticeable Text -->
-        <div class="w-full bg-yellow-50/95 backdrop-blur-sm text-center py-2.5 px-4 rounded-2xl shadow-md border-2 border-yellow-300 transform hover:scale-[1.01] transition">
-            <span class="text-xl md:text-2xl font-black text-rose-600 tracking-wide drop-shadow-sm">🎨 Teacher Nada ✨</span>
+        <div class="w-full bg-yellow-50/95 backdrop-blur-sm text-center py-2 px-4 rounded-2xl shadow-md border-2 border-yellow-300 transform hover:scale-[1.01] transition">
+            <span class="text-base md:text-xl font-black text-rose-600 tracking-wide drop-shadow-sm">🎨 Teacher Nada ✨</span>
         </div>
     </footer>
 
@@ -256,7 +256,7 @@
             grid.innerHTML = '';
             options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-sm md:text-base py-2.5 px-3 rounded-xl shadow-sm border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center space-x-2";
+                btn.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-xs md:text-base py-2 px-3 rounded-xl shadow-sm border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center space-x-2";
                 btn.innerText = opt;
                 btn.onclick = () => handleChoice(opt, btn);
                 grid.appendChild(btn);
@@ -303,15 +303,15 @@
                 }
 
                 // Highlight correct button
-                btnElement.className = "bg-green-500 text-white font-bold text-sm md:text-base py-2.5 px-3 rounded-xl shadow-md border-2 border-white transition transform scale-105 flex items-center justify-center space-x-2";
+                btnElement.className = "bg-green-500 text-white font-bold text-xs md:text-base py-2 px-3 rounded-xl shadow-md border-2 border-white transition transform scale-105 flex items-center justify-center space-x-2";
 
             } else {
                 // Incorrect Answer
                 playSound('error');
                 speakText("Try again!");
-                btnElement.className = "bg-red-100 text-red-500 font-bold text-sm md:text-base py-2.5 px-3 rounded-xl shadow-sm border-2 border-red-200 transition transform shake flex items-center justify-center";
+                btnElement.className = "bg-red-100 text-red-500 font-bold text-xs md:text-base py-2 px-3 rounded-xl shadow-sm border-2 border-red-200 transition transform shake flex items-center justify-center";
                 setTimeout(() => {
-                    btnElement.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-sm md:text-base py-2.5 px-3 rounded-xl shadow-sm border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center space-x-2";
+                    btnElement.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-xs md:text-base py-2 px-3 rounded-xl shadow-sm border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center space-x-2";
                 }, 400);
             }
         }
