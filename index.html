@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Family Vocabulary Fun!</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,14 +15,15 @@
             height: 100dvh;
             margin: 0;
             overflow: hidden;
+            box-sizing: border-box;
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
         .silhouette {
-            filter: brightness(0) invert(0.8) drop-shadow(0 8px 12px rgba(0,0,0,0.2));
+            filter: brightness(0) invert(0.8) drop-shadow(0 4px 8px rgba(0,0,0,0.2));
             transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .revealed {
-            filter: brightness(1) invert(0) drop-shadow(0 12px 20px rgba(0,0,0,0.15));
+            filter: brightness(1) invert(0) drop-shadow(0 8px 15px rgba(0,0,0,0.15));
             transform: scale(1.05);
         }
         .pop-in {
@@ -34,35 +35,35 @@
         }
     </style>
 </head>
-<body class="h-[100dvh] w-screen flex flex-col items-center justify-between p-2 md:p-4 select-none box-border">
+<body class="h-[100dvh] w-screen flex flex-col items-center justify-between p-2 select-none">
 
     <!-- Main Game Arena -->
-    <main class="w-full max-w-xl flex-1 flex flex-col items-center justify-around my-auto">
+    <main class="w-full max-w-xl flex-1 flex flex-col items-center justify-evenly min-h-0 my-1">
         
         <!-- Big Question & Speaker Button Header -->
-        <div class="flex items-center justify-center space-x-3 w-full px-2 pop-in">
-            <h1 id="question-text" class="text-2xl md:text-4xl font-black text-indigo-900 tracking-wide">
+        <div class="flex items-center justify-center space-x-3 w-full px-2 shrink-0 pop-in">
+            <h1 id="question-text" class="text-2xl md:text-3xl font-black text-indigo-900 tracking-wide">
                 Who's this? 🤔
             </h1>
-            <button onclick="speakPrompt()" class="bg-amber-400 hover:bg-amber-500 text-white font-bold p-2.5 md:p-3 rounded-2xl shadow-md transition transform active:scale-95 flex items-center justify-center text-xl md:text-2xl" title="Repeat Question">
+            <button onclick="speakPrompt()" class="bg-amber-400 hover:bg-amber-500 text-white font-bold p-2.5 rounded-2xl shadow-md transition transform active:scale-95 flex items-center justify-center text-xl shrink-0" title="Repeat Question">
                 🔊
             </button>
         </div>
 
         <!-- Mystery Family Member Card -->
-        <div class="relative bg-white/95 backdrop-blur-sm rounded-3xl p-3 shadow-xl border-4 border-white w-full max-w-sm flex flex-col items-center justify-center pop-in h-[180px] md:h-[240px]">
-            <div id="confetti-overlay" class="absolute inset-0 pointer-events-none flex items-center justify-center text-5xl opacity-0 transition-opacity duration-300">🎉</div>
+        <div class="relative bg-white/95 backdrop-blur-sm rounded-3xl p-3 shadow-xl border-4 border-white w-full max-w-xs flex flex-col items-center justify-center pop-in shrink-0 h-[150px] md:h-[190px]">
+            <div id="confetti-overlay" class="absolute inset-0 pointer-events-none flex items-center justify-center text-4xl opacity-0 transition-opacity duration-300">🎉</div>
             <div id="image-container" class="transition-all duration-500 flex items-center justify-center">
                 <!-- Dynamically filled avatar placeholder -->
-                <div id="avatar-display" class="text-7xl md:text-9xl silhouette">👶</div>
+                <div id="avatar-display" class="text-6xl md:text-8xl silhouette">👶</div>
             </div>
-            <div id="success-banner" class="absolute bottom-2.5 bg-green-500 text-white font-black px-5 py-1 rounded-full shadow-lg opacity-0 transform translate-y-3 transition-all duration-300 text-base md:text-xl">
+            <div id="success-banner" class="absolute bottom-2 bg-green-500 text-white font-black px-4 py-0.5 rounded-full shadow-lg opacity-0 transform translate-y-3 transition-all duration-300 text-sm md:text-base">
                 ✨ It's my <span id="target-name-banner">mother</span>! ✨
             </div>
         </div>
 
         <!-- Multiple Choice Options Grid -->
-        <div id="options-grid" class="grid grid-cols-2 gap-2.5 w-full max-w-sm">
+        <div id="options-grid" class="grid grid-cols-2 gap-2 w-full max-w-xs shrink-0">
             <!-- Buttons generated dynamically via JS -->
         </div>
 
@@ -70,18 +71,18 @@
 
     <!-- Footer / Next Button & Credit Banner with Stars Included -->
     <footer class="w-full max-w-xl flex flex-col items-center space-y-1.5 pb-1 shrink-0">
-        <button id="next-btn" onclick="nextRound()" class="hidden bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-black text-lg px-8 py-2.5 rounded-2xl shadow-lg border-2 border-white transform hover:scale-105 active:scale-95 transition flex items-center space-x-2">
+        <button id="next-btn" onclick="nextRound()" class="hidden bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white font-black text-base px-6 py-2 rounded-2xl shadow-lg border-2 border-white transform hover:scale-105 active:scale-95 transition flex items-center space-x-2">
             <span>Next Round!</span>
-            <span class="text-xl">➡️</span>
+            <span class="text-lg">➡️</span>
         </button>
 
         <!-- Credit Banner with Score Stars Embedded -->
-        <div class="w-full bg-yellow-50/95 backdrop-blur-sm text-center py-2 px-4 rounded-2xl shadow-md border-2 border-yellow-300 flex items-center justify-between">
-            <div id="stars-container" class="flex space-x-0.5 text-sm md:text-lg" title="Score Stars">
+        <div class="w-full bg-yellow-50/95 backdrop-blur-sm text-center py-1.5 px-3 rounded-2xl shadow-md border-2 border-yellow-300 flex items-center justify-between">
+            <div id="stars-container" class="flex space-x-0.5 text-xs md:text-base" title="Score Stars">
                 ⭐ ⭐ ⭐
             </div>
-            <span class="text-base md:text-xl font-black text-rose-600 tracking-wide drop-shadow-sm">🎨 Teacher Nada ✨</span>
-            <div class="w-10"></div> <!-- Spacer for perfect centering balance -->
+            <span class="text-sm md:text-lg font-black text-rose-600 tracking-wide drop-shadow-sm">🎨 Teacher Nada ✨</span>
+            <div class="w-8"></div> <!-- Spacer for perfect centering balance -->
         </div>
     </footer>
 
@@ -213,7 +214,7 @@
             grid.innerHTML = '';
             options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-base md:text-xl py-2.5 px-3 rounded-2xl shadow-md border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center";
+                btn.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-sm md:text-lg py-2 px-3 rounded-2xl shadow-md border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center";
                 btn.innerText = opt;
                 btn.onclick = () => handleChoice(opt, btn);
                 grid.appendChild(btn);
@@ -253,14 +254,14 @@
                     }, 500);
                 }
 
-                btnElement.className = "bg-green-500 text-white font-bold text-base md:text-xl py-2.5 px-3 rounded-2xl shadow-lg border-2 border-white transition transform scale-105 flex items-center justify-center";
+                btnElement.className = "bg-green-500 text-white font-bold text-sm md:text-lg py-2 px-3 rounded-2xl shadow-lg border-2 border-white transition transform scale-105 flex items-center justify-center";
 
             } else {
                 playSound('error');
                 speakText("Try again!");
-                btnElement.className = "bg-red-100 text-red-500 font-bold text-base md:text-xl py-2.5 px-3 rounded-2xl shadow-sm border-2 border-red-200 transition transform shake flex items-center justify-center";
+                btnElement.className = "bg-red-100 text-red-500 font-bold text-sm md:text-lg py-2 px-3 rounded-2xl shadow-sm border-2 border-red-200 transition transform shake flex items-center justify-center";
                 setTimeout(() => {
-                    btnElement.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-base md:text-xl py-2.5 px-3 rounded-2xl shadow-md border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center";
+                    btnElement.className = "bg-white hover:bg-indigo-50 text-indigo-900 font-bold text-sm md:text-lg py-2 px-3 rounded-2xl shadow-md border-2 border-indigo-100 transition transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center";
                 }, 400);
             }
         }
